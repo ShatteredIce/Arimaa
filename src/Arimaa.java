@@ -42,6 +42,7 @@ public class Arimaa implements ActionListener, MouseListener{
 	JButton reset = new JButton("Reset Board");
 	ArimaaPiece selectedPiece;
 	boolean gameOver = false;
+	boolean gameRunning = false;
 	boolean pushMove = false;
 	int pushedPower;
 	int pushedX;
@@ -129,7 +130,7 @@ public class Arimaa implements ActionListener, MouseListener{
 				}
 			}
 		}
-		else if(event.getSource().equals(resign)){
+		else if(event.getSource().equals(resign) && gameOver == false){
 			gameOver = true;
 			if(currentPlayer == 0){
 				gameStatus.setText(" "+goldPlayer + " has resigned!");
@@ -142,6 +143,7 @@ public class Arimaa implements ActionListener, MouseListener{
 			gameOver = false;
 			currentPlayer = 0;
 			gameStatus.setText("");
+			changeNameText.setText("");
 			playerLabel.setText("   Current Player: "+goldPlayer);
 			movesLeft = 4;
 			movesLabel.setText("   Moves Left: "+movesLeft);
@@ -163,12 +165,45 @@ public class Arimaa implements ActionListener, MouseListener{
 				playerLabel.setText("   Current Player: "+goldPlayer);
 			}
 			frame.repaint();
-			board.checkWin(currentPlayer);
+			int winResult = board.checkWin(currentPlayer);
+			if(winResult == 1){
+				gameStatus.setText(goldPlayer + " has won!");
+				gameOver = true;
+			}
+			else if(winResult == 3){
+				gameStatus.setText(silverPlayer + " is eliminated!");
+				gameOver = true;
+			}
+			if(winResult == 2){
+				gameStatus.setText(silverPlayer + " has won!");
+				gameOver = true;
+			}
+			else if(winResult == 4){
+				gameStatus.setText(goldPlayer + " is eliminated!");
+				gameOver = true;
+			}
 		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent event) {
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent event) {
 		if(gameOver == false){
 			if(board.atPosition(event.getX()/100, event.getY()/100) != null){
 				if(selectedPiece != null && selectedPiece.equals(board.atPosition(event.getX()/100, event.getY()/100))){
@@ -241,23 +276,6 @@ public class Arimaa implements ActionListener, MouseListener{
 			checkTrap(5,5);
 			board.repaint();
 		}
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 

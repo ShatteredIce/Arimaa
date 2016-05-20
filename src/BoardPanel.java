@@ -95,6 +95,8 @@ public class BoardPanel extends JPanel{
 	}
 
 	//Checks to see if a player has won the game
+	//Outputs 1 if gold has won, 2 if silver has won, and 0 if nobody has won
+	//Outputs 3 if silver is eliminated, and 4 if gold is eliminated
 	public int checkWin(int currentPlayer) {
 		boolean goldEliminated = true;
 		boolean silverEliminated = true;
@@ -113,6 +115,41 @@ public class BoardPanel extends JPanel{
 					goldEliminated = false;
 				}
 			}
+			if(goldEliminated == true && silverEliminated == true){
+				return 3;
+			}
+			else if(goldEliminated == true){
+				return 4;
+			}
+			else if(silverEliminated == true){
+				return 3;
+			}
 		}
+		else if(currentPlayer == 1){
+			for (int i = 0; i < pieces.size(); i++) {
+				if(pieces.get(i).getPower() == 1 && pieces.get(i).getY() == 7 && pieces.get(i).getColor() == 1){
+					return 2;
+				}
+				else if(pieces.get(i).getPower() == 1 && pieces.get(i).getY() == 0 && pieces.get(i).getColor() == 0){
+					return 1;
+				}
+				else if(pieces.get(i).getPower() == 1 && pieces.get(i).getColor() == 1){
+					silverEliminated = false;
+				}
+				else if(pieces.get(i).getPower() == 1 && pieces.get(i).getColor() == 0){
+					goldEliminated = false;
+				}
+			}
+			if(goldEliminated == true && silverEliminated == true){
+				return 4;
+			}
+			else if(goldEliminated == true){
+				return 4;
+			}
+			else if(silverEliminated == true){
+				return 3;
+			}
+		}
+		return 0;
 	}
 }
