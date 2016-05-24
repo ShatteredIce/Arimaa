@@ -40,9 +40,11 @@ public class Arimaa implements ActionListener, MouseListener{
 	JButton resign = new JButton("Resign");
 	JLabel gameStatus = new JLabel("");
 	JButton reset = new JButton("Reset Board");
+	JButton start = new JButton("Start Game");
 	ArimaaPiece selectedPiece;
 	boolean gameOver = false;
 	boolean gameRunning = false;
+	boolean gameSetup = false;
 	boolean pushMove = false;
 	int pushedPower;
 	int pushedX;
@@ -98,6 +100,9 @@ public class Arimaa implements ActionListener, MouseListener{
 		c.weighty = 0;
 		c.gridy = 7;
 		c.ipady = 10;
+		right.add(start, c);
+		start.addActionListener(this);
+		c.gridy = 8;
 		right.add(reset, c);
 		reset.addActionListener(this);
 		right.setPreferredSize(new Dimension(152, 152));
@@ -140,7 +145,15 @@ public class Arimaa implements ActionListener, MouseListener{
 			}
 		}
 		else if(event.getSource().equals(reset)){
+			pullPower = 0;
+			if(selectedPiece != null){
+				selectedPiece = null;
+			}
 			gameOver = false;
+			gameSetup = true;
+			start.setEnabled(true);
+			endTurn.setEnabled(false);
+			resign.setEnabled(false);
 			currentPlayer = 0;
 			gameStatus.setText("");
 			changeNameText.setText("");
@@ -183,6 +196,12 @@ public class Arimaa implements ActionListener, MouseListener{
 				gameOver = true;
 			}
 		}
+		else if(event.getSource().equals(start)){
+			gameSetup = false;
+			start.setEnabled(false);
+			endTurn.setEnabled(true);
+			resign.setEnabled(true);
+		}
 	}
 
 	@Override
@@ -204,7 +223,33 @@ public class Arimaa implements ActionListener, MouseListener{
 
 	@Override
 	public void mousePressed(MouseEvent event) {
-		if(gameOver == false){
+		if(gameSetup == true){
+			if(selectedPiece == null && board.atPosition(event.getX()/100, event.getY()/100) != null){
+				selectedPiece = board.atPosition(event.getX()/100, event.getY()/100);
+				selectedPiece.setSelected(true);
+			}
+			else if(board.atPosition(event.getX()/100, event.getY()/100) != null){
+				if(selectedPiece != null && selectedPiece.equals(board.atPosition(event.getX()/100, event.getY()/100))){
+					selectedPiece.setSelected(false);
+					selectedPiece = null;
+				}
+				else if(selectedPiece != null && selectedPiece.getColor() == board.atPosition(event.getX()/100, event.getY()/100).getColor()){
+					ArimaaPiece clicked = board.atPosition(event.getX()/100, event.getY()/100);
+					clicked.setX(selectedPiece.getX());
+					clicked.setY(selectedPiece.getY());
+					selectedPiece.setX(event.getX()/100);
+					selectedPiece.setY(event.getY()/100);
+				}
+				else if(selectedPiece != null && selectedPiece.getColor() != board.atPosition(event.getX()/100, event.getY()/100).getColor()){
+					selectedPiece.setSelected(false);
+					selectedPiece = null;
+					selectedPiece = board.atPosition(event.getX()/100, event.getY()/100);
+					selectedPiece.setSelected(true);
+				}
+			}
+			board.repaint();
+		}
+		else if(gameOver == false){
 			if(board.atPosition(event.getX()/100, event.getY()/100) != null){
 				if(selectedPiece != null && selectedPiece.equals(board.atPosition(event.getX()/100, event.getY()/100))){
 					selectedPiece.setSelected(false);
