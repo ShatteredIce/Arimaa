@@ -12,6 +12,12 @@ import javax.swing.JPanel;
 public class BoardPanel extends JPanel{
 	
 	ArrayList<ArimaaPiece> pieces = new ArrayList<ArimaaPiece>();
+	String goldBoard1 = null;
+	String goldBoard2 = null;
+	String goldBoard3 = null;
+	String silverBoard1 = null;
+	String silverBoard2 = null;
+	String silverBoard3 = null;
 	
 	public BoardPanel(){
 		super();
@@ -64,6 +70,12 @@ public class BoardPanel extends JPanel{
 	
 	//Remove all the pieces
 	public void resetBoard(){
+		goldBoard1 = null;
+		goldBoard2 = null;
+		goldBoard3 = null;
+		silverBoard1 = null;
+		silverBoard2 = null;
+		silverBoard3 = null;
 		while (pieces.size() > 0) {
 			pieces.remove(0);
 		}
@@ -93,11 +105,36 @@ public class BoardPanel extends JPanel{
 		}
 		this.repaint();
 	}
+	
+	public String getBoardState(int currentPlayer){
+		String output = "";
+		for (int i = 0; i < pieces.size(); i++) {
+			if(pieces.get(i).getColor() == currentPlayer){
+				output += pieces.get(i).getX() + "" + pieces.get(i).getY() + "" + pieces.get(i).getPower();
+			}
+		}
+		return output;
+	}
+	
+	public void updateBoardStates(int currentPlayer){
+		if(currentPlayer == 0){
+			goldBoard3 = goldBoard2;
+			goldBoard2 = goldBoard1;
+			goldBoard1 = getBoardState(currentPlayer);
+		}
+		else if(currentPlayer == 1){
+			silverBoard3 = silverBoard2;
+			silverBoard2 = silverBoard1;
+			silverBoard1 = getBoardState(currentPlayer);
+		}
+	}
 
 	//Checks to see if a player has won the game
 	//Outputs 1 if gold has won, 2 if silver has won, and 0 if nobody has won
 	//Outputs 3 if silver is eliminated, and 4 if gold is eliminated
+	//Outputs 5 if silver makes a 3rd time repetition and 6 if gold makes a 3rd time repetition
 	public int checkWin(int currentPlayer) {
+		updateBoardStates(currentPlayer);
 		boolean goldEliminated = true;
 		boolean silverEliminated = true;
 		if(currentPlayer == 0){
@@ -124,6 +161,9 @@ public class BoardPanel extends JPanel{
 			else if(silverEliminated == true){
 				return 3;
 			}
+			if(silverBoard3 != null && silverBoard3.equals(silverBoard2) && silverBoard3.equals(silverBoard1)){
+				return 5;
+			}
 		}
 		else if(currentPlayer == 1){
 			for (int i = 0; i < pieces.size(); i++) {
@@ -148,6 +188,9 @@ public class BoardPanel extends JPanel{
 			}
 			else if(silverEliminated == true){
 				return 3;
+			}
+			if(goldBoard3 != null && goldBoard3.equals(goldBoard2) && goldBoard3.equals(goldBoard1)){
+				return 6;
 			}
 		}
 		return 0;

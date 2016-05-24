@@ -44,7 +44,7 @@ public class Arimaa implements ActionListener, MouseListener{
 	ArimaaPiece selectedPiece;
 	boolean gameOver = false;
 	boolean gameRunning = false;
-	boolean gameSetup = false;
+	boolean gameSetup = true;
 	boolean pushMove = false;
 	int pushedPower;
 	int pushedX;
@@ -107,13 +107,16 @@ public class Arimaa implements ActionListener, MouseListener{
 		reset.addActionListener(this);
 		right.setPreferredSize(new Dimension(152, 152));
 		frame.add(right, BorderLayout.EAST);
-		board.addPiece(new ArimaaPiece(5,4,1,0));
-		board.addPiece(new ArimaaPiece(5,5,1,0));
-		board.addPiece(new ArimaaPiece(3,5,1,1));
-		board.addPiece(new ArimaaPiece(5,6,8,1));
-		board.addPiece(new ArimaaPiece(5,7,9,1));
-		board.addPiece(new ArimaaPiece(4,6,6,0));
-		board.addPiece(new ArimaaPiece(3,6,5,1));
+//		board.addPiece(new ArimaaPiece(5,4,1,0));
+//		board.addPiece(new ArimaaPiece(5,5,1,0));
+//		board.addPiece(new ArimaaPiece(3,5,1,1));
+//		board.addPiece(new ArimaaPiece(5,6,8,1));
+//		board.addPiece(new ArimaaPiece(5,7,9,1));
+//		board.addPiece(new ArimaaPiece(4,6,6,0));
+//		board.addPiece(new ArimaaPiece(3,6,5,1));
+		endTurn.setEnabled(false);
+		resign.setEnabled(false);
+		board.resetBoard();	
 	}
 
 	public static void main(String[] args) {
@@ -169,15 +172,6 @@ public class Arimaa implements ActionListener, MouseListener{
 			}
 			movesLeft = 4;
 			movesLabel.setText("   Moves Left: "+movesLeft);
-			if(currentPlayer == 0){
-				currentPlayer = 1;
-				playerLabel.setText("   Current Player: "+silverPlayer);
-			}
-			else{
-				currentPlayer = 0;
-				playerLabel.setText("   Current Player: "+goldPlayer);
-			}
-			frame.repaint();
 			int winResult = board.checkWin(currentPlayer);
 			if(winResult == 1){
 				gameStatus.setText(goldPlayer + " has won!");
@@ -195,6 +189,23 @@ public class Arimaa implements ActionListener, MouseListener{
 				gameStatus.setText(goldPlayer + " is eliminated!");
 				gameOver = true;
 			}
+			else if(winResult == 5){
+				gameStatus.setText("<html>"+silverPlayer + " loses<br>(3rd time repetition)</html>");
+				gameOver = true;
+			}
+			else if(winResult == 6){
+				gameStatus.setText("<html>"+goldPlayer + " loses<br>(3rd time repetition)</html>");
+				gameOver = true;
+			}
+			if(currentPlayer == 0){
+				currentPlayer = 1;
+				playerLabel.setText("   Current Player: "+silverPlayer);
+			}
+			else{
+				currentPlayer = 0;
+				playerLabel.setText("   Current Player: "+goldPlayer);
+			}
+			frame.repaint();
 		}
 		else if(event.getSource().equals(start)){
 			gameSetup = false;
