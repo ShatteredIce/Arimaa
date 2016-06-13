@@ -161,9 +161,6 @@ public class BoardPanel extends JPanel{
 			else if(silverEliminated == true){
 				return 3;
 			}
-			if(silverBoard3 != null && silverBoard3.equals(silverBoard2) && silverBoard3.equals(silverBoard1)){
-				return 5;
-			}
 		}
 		else if(currentPlayer == 1){
 			for (int i = 0; i < pieces.size(); i++) {
@@ -189,10 +186,26 @@ public class BoardPanel extends JPanel{
 			else if(silverEliminated == true){
 				return 3;
 			}
-			if(goldBoard3 != null && goldBoard3.equals(goldBoard2) && goldBoard3.equals(goldBoard1)){
-				return 6;
-			}
 		}
 		return 0;
+	}
+	
+	public void getStartPositions(){
+		goldBoard1 = getBoardState(0);
+		silverBoard1 = getBoardState(1);
+	}
+	
+	public boolean checkSameState(int player){
+		if(player == 0){
+			if(getBoardState(0).equals(goldBoard1)){
+				return true;
+			}
+		}
+		else if(player == 1){
+			if(getBoardState(1).equals(silverBoard1)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

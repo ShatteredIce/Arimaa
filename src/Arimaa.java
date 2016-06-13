@@ -166,6 +166,16 @@ public class Arimaa implements ActionListener, MouseListener{
 			board.resetBoard();			
 		}
 		else if(event.getSource().equals(endTurn) && gameOver == false){
+			if(movesLeft == 4){
+				return;
+			}
+			gameStatus.setText("");
+			if(board.checkSameState(currentPlayer)){
+				movesLeft = 4;
+				movesLabel.setText("   Moves Left: "+movesLeft);
+				gameStatus.setText("Board state is the same");
+				return;
+			}
 			if(selectedPiece != null){
 				selectedPiece.setSelected(false);
 				selectedPiece = null;
@@ -189,14 +199,6 @@ public class Arimaa implements ActionListener, MouseListener{
 				gameStatus.setText(goldPlayer + " is eliminated!");
 				gameOver = true;
 			}
-			else if(winResult == 5){
-				gameStatus.setText("<html>"+silverPlayer + " loses<br>(3rd time repetition)</html>");
-				gameOver = true;
-			}
-			else if(winResult == 6){
-				gameStatus.setText("<html>"+goldPlayer + " loses<br>(3rd time repetition)</html>");
-				gameOver = true;
-			}
 			if(currentPlayer == 0){
 				currentPlayer = 1;
 				playerLabel.setText("   Current Player: "+silverPlayer);
@@ -208,6 +210,7 @@ public class Arimaa implements ActionListener, MouseListener{
 			frame.repaint();
 		}
 		else if(event.getSource().equals(start)){
+			board.getStartPositions();
 			gameSetup = false;
 			start.setEnabled(false);
 			endTurn.setEnabled(true);
